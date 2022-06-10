@@ -4,8 +4,8 @@ import com.example.WebSocketsServer.Entity.UserEntity;
 import com.example.WebSocketsServer.Resourse.UserResource;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
@@ -31,12 +31,12 @@ public class UserService {
         return userResource.getOne(id);
     }
 
-//    public UserEntity saveUser(UserEntity answerModel){
-//        return UserResource.save(answerModel);
-//    }
-//
-//    public void deleteUserById(long id){
-//        UserResource.deleteById(id);
-//    }
+    public UserEntity saveUser(UserEntity answerModel){
+        return userResource.save(answerModel);
+    }
+
+    public void deleteUserById(long id){
+        userResource.deleteById(id);
+    }
 
 }
