@@ -21,11 +21,5 @@ public class WebSocketsServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebSocketsServerApplication.class, args);
-
-
-//		List<UserEntity> userEntityList = userService.findAll();
-//		userEntityList.forEach(list->{
-//			System.out.println(list.getUser()+" "+list.getPass());
-//		});
 	}
 }
