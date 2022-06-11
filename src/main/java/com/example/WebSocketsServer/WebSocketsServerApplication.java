@@ -1,14 +1,8 @@
 package com.example.WebSocketsServer;
 
-import com.example.WebSocketsServer.Entity.UserEntity;
 import com.example.WebSocketsServer.Service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-
-import jakarta.transaction.Transactional;
-import java.util.List;
 
 @SpringBootApplication
 public class WebSocketsServerApplication {

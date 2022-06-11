@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface UserRepoCustom {
-    List<UserEntity> getUserByName(String name);
+    List<UserEntity> getUserByName(String name, String pass);
 }

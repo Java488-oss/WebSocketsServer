@@ -37,12 +37,12 @@ class SocketController {
             pass=jsonArray.getJSONObject(i).getString("pass");
         }
 
-        List<UserEntity> entityList = userRepo.getUserByName(user);
-        entityList.forEach(i->{
-            System.out.println("return to BD by user "+i.getUser()+"  "+i.getPass());
-        });
+        List<UserEntity> entityList = userRepo.getUserByName(user, pass);
 
-        return "return "+ user +"  "+pass;
+        if (entityList.size()!=0){
+            return "true";
+        }
+        return "false";
     }
 
     @MessageMapping("/register")
