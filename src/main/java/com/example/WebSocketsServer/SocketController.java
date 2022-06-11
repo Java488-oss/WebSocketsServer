@@ -1,6 +1,7 @@
 package com.example.WebSocketsServer;
 
 import com.example.WebSocketsServer.Entity.UserEntity;
+import com.example.WebSocketsServer.Service.UserRepoImpl;
 import com.example.WebSocketsServer.Service.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,20 +16,16 @@ class SocketController {
 
     private final UserService userService;
 
-    SocketController(UserService userService){
+    private final UserRepoImpl userRepo;
+
+    SocketController(UserService userService, UserRepoImpl userRepo){
         this.userService = userService;
+        this.userRepo = userRepo;
     }
 
     @MessageMapping("/hello-msg-mapping")
     @SendTo("/topic/greetings")
     public String echoMessageMapping(String message) {
-
-        List<UserEntity> userEntityList = userService.findAll();
-
-        userEntityList.forEach(list->{
-            System.out.println(list.getUser()+" "+list.getPass());
-        });
-
 
         JSONObject jsonObject = new JSONObject(message);
         String user = "null";
@@ -39,6 +36,11 @@ class SocketController {
             user =jsonArray.getJSONObject(i).getString("user");
             pass=jsonArray.getJSONObject(i).getString("pass");
         }
+
+        List<UserEntity> entityList = userRepo.getUserByName(user);
+        entityList.forEach(i->{
+            System.out.println("return to BD by user "+i.getUser()+"  "+i.getPass());
+        });
 
         return "return "+ user +"  "+pass;
     }

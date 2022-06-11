@@ -35,13 +35,6 @@ public class UserService {
         return userResource.getOne(id);
     }
 
-//    public Boolean findUserAndPass(String name, String pass){
-//        System.out.print(name+"  "+pass);
-//        Boolean aBoolean = userResource.findUserAndPass(name, pass);
-//        System.out.println(aBoolean);
-//        return true;
-//    }
-
     public UserEntity saveUser(UserEntity answerModel){
         return userResource.save(answerModel);
     }
