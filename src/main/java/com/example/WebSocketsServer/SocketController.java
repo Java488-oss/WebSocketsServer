@@ -5,8 +5,10 @@ import com.example.WebSocketsServer.Service.UserRepoImpl;
 import com.example.WebSocketsServer.Service.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,13 +16,16 @@ import java.util.List;
 @RestController
 class SocketController {
 
+    private final SimpMessagingTemplate messagingTemplate;
+
     private final UserService userService;
 
     private final UserRepoImpl userRepo;
 
-    SocketController(UserService userService, UserRepoImpl userRepo){
+    SocketController(UserService userService, UserRepoImpl userRepo, SimpMessagingTemplate messagingTemplate){
         this.userService = userService;
         this.userRepo = userRepo;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/hello-msg-mapping")
@@ -39,10 +44,9 @@ class SocketController {
 
         List<UserEntity> entityList = userRepo.getUserByName(user, pass);
 
-        if (entityList.size()!=0){
-            return "true";
-        }
-        return "false";
+        String s = entityList.size() != 0 ? "true" : "false";
+
+        return s;
     }
 
     @MessageMapping("/register")
