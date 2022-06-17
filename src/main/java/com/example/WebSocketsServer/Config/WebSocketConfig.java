@@ -22,22 +22,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/queue", "/exchange");
-//        config.enableStompBrokerRelay("/topic", "/queue", "/exchange"); // Uncomment for external message broker (ActiveMQ, RabbitMQ)
-        config.setApplicationDestinationPrefixes("/topic", "/queue"); // prefix in client queries
+        config.enableSimpleBroker("/user/queue/specific-user"); //send answer to client
+        config.setApplicationDestinationPrefixes("/spring-security-mvc-socket"); //reading what's send client
         config.setUserDestinationPrefix("/user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/example-endpoint").withSockJS();
+        registry.addEndpoint("/room").withSockJS();
     }
 
 
 //    @Override
-//    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-//        registry.addHandler(new ServerWebSocketHandler(), "/ws");
+//    public void configureMessageBroker(MessageBrokerRegistry config) {
+//        config.enableSimpleBroker("/topic", "/queue", "/exchange");
+////        config.enableStompBrokerRelay("/topic", "/queue", "/exchange"); // Uncomment for external message broker (ActiveMQ, RabbitMQ)
+//        config.setApplicationDestinationPrefixes("/test", "/queue"); // prefix in client queries
+//        config.setUserDestinationPrefix("/user");
+//    }
 //
+//    @Override
+//    public void registerStompEndpoints(StompEndpointRegistry registry) {
+//        registry.addEndpoint("/example-endpoint").withSockJS();
 //    }
 
 }
