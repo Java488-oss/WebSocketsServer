@@ -31,19 +31,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/room").withSockJS();
     }
-
-
-//    @Override
-//    public void configureMessageBroker(MessageBrokerRegistry config) {
-//        config.enableSimpleBroker("/topic", "/queue", "/exchange");
-////        config.enableStompBrokerRelay("/topic", "/queue", "/exchange"); // Uncomment for external message broker (ActiveMQ, RabbitMQ)
-//        config.setApplicationDestinationPrefixes("/test", "/queue"); // prefix in client queries
-//        config.setUserDestinationPrefix("/user");
-//    }
-//
-//    @Override
-//    public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        registry.addEndpoint("/example-endpoint").withSockJS();
-//    }
-
 }

@@ -5,7 +5,6 @@ import com.example.WebSocketsServer.Service.UserRepoImpl;
 import com.example.WebSocketsServer.Service.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -29,17 +28,16 @@ class SocketController {
     }
 
 
-    @MessageMapping("/hello-msg-mapping")
-    public void echoMessageMapping(@Payload UserEntity userEntity, @Header("simpSessionId") String sessionId){
-        UserEntity userEntity1 = new UserEntity(userEntity.getUser(), userEntity.getPass());
+    @MessageMapping("/Login")
+    public void echoMessageMapping(@Payload String jsonStr){
+        JSONObject jsonObject = new JSONObject(jsonStr);
 
-        List<UserEntity> entityList = userRepo.getUserByName(userEntity1.getUser(), userEntity1.getPass());
+        String name = jsonObject.getString("user");
+        String pass = jsonObject.getString("pass");
 
+        List<UserEntity> entityList = userRepo.getUserByName(name,pass);
         String s = entityList.size() != 0 ? "true" : "false";
-
-        System.out.println("\n"+userEntity1.getPass()+"  "+userEntity1.getUser()+ "  "+s+"  "+sessionId);
-
-        messagingTemplate.convertAndSendToUser(userEntity1.getPass(), "/queue/updates", s);
+        messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/updates", s);
 
     }
 

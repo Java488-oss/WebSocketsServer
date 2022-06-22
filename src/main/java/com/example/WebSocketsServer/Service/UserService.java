@@ -23,7 +23,6 @@ public class UserService {
         this.userResource = userResource;
     }
 
-
     public List<UserEntity> findAll(){
         return userResource.findAll();
     }
