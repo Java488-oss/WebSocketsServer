@@ -29,7 +29,7 @@ class SocketController {
 
 
     @MessageMapping("/Login")
-    public void echoMessageMapping(@Payload String jsonStr){
+    public void LogIn(@Payload String jsonStr){
         JSONObject jsonObject = new JSONObject(jsonStr);
 
         String name = jsonObject.getString("user");
@@ -38,6 +38,16 @@ class SocketController {
         List<UserEntity> entityList = userRepo.getUserByName(name,pass);
         String s = entityList.size() != 0 ? "true" : "false";
         messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/updates", s);
+
+    }
+
+    @MessageMapping("/SendMsg")
+    public void GetAndSendMSg(@Payload String jsonStr){
+        JSONObject jsonObject = new JSONObject(jsonStr);
+
+        System.out.println("\n\n"+jsonObject);
+
+        messagingTemplate.convertAndSendToUser(jsonObject.getString("userFrom"), "/queue/updates", jsonObject.getString("msg"));
 
     }
 
