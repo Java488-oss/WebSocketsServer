@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/user/queue/specific-user"); //send answer to client
+        config.enableSimpleBroker("/user"); //send answer to client
         config.setApplicationDestinationPrefixes("/spring-security-mvc-socket"); //reading what's send client
         config.setUserDestinationPrefix("/user");
     }
