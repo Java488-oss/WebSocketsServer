@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @RestController
 class SocketController {
@@ -20,6 +22,9 @@ class SocketController {
     private final UserService userService;
 
     private final UserRepoImpl userRepo;
+    private Timer timer = new Timer();
+
+    private Boolean aBoolean = false;
 
     SocketController(UserService userService, UserRepoImpl userRepo, SimpMessagingTemplate messagingTemplate){
         this.userService = userService;
@@ -36,8 +41,26 @@ class SocketController {
         String pass = jsonObject.getString("pass");
 
         List<UserEntity> entityList = userRepo.getUserByName(name,pass);
+
         String s = entityList.size() != 0 ? "true" : "false";
-        messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/updates", s);
+
+        JSONObject student = new JSONObject();
+        student.put("user", name);
+        student.put("pass", pass);
+        student.put("result", s);
+
+        System.out.println("\n\n"+student);
+
+        messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/updates", String.valueOf(student));
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+
+                GetStateUser();
+            }
+        }, 2000);
 
     }
 
@@ -47,7 +70,14 @@ class SocketController {
 
         System.out.println("\n\n"+jsonObject);
 
-        messagingTemplate.convertAndSendToUser(jsonObject.getString("userFrom"), "/queue/updates", jsonObject.getString("msg"));
+        messagingTemplate.convertAndSendToUser(jsonObject.getString("userFrom"), "/queue/updates", String.valueOf(jsonObject));
+
+    }
+
+
+    public void GetStateUser(){
+
+        messagingTemplate.convertAndSendToUser("13", "/queue/state", "Your online?");
 
     }
 
