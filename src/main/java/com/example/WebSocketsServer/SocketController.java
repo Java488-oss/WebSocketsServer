@@ -1,6 +1,8 @@
 package com.example.WebSocketsServer;
 
+import com.example.WebSocketsServer.Entity.MsgEntity;
 import com.example.WebSocketsServer.Entity.UserEntity;
+import com.example.WebSocketsServer.Service.MsgService;
 import com.example.WebSocketsServer.Service.UserRepoImpl;
 import com.example.WebSocketsServer.Service.UserService;
 import org.json.JSONArray;
@@ -10,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,15 +24,17 @@ class SocketController {
 
     private final UserService userService;
 
+    private final MsgService msgService;
     private final UserRepoImpl userRepo;
     private Timer timer = new Timer();
 
     private Boolean aBoolean = false;
 
-    SocketController(UserService userService, UserRepoImpl userRepo, SimpMessagingTemplate messagingTemplate){
+    SocketController(UserService userService, UserRepoImpl userRepo, SimpMessagingTemplate messagingTemplate, MsgService msgService){
         this.userService = userService;
         this.userRepo = userRepo;
         this.messagingTemplate = messagingTemplate;
+        this.msgService = msgService;
     }
 
 
@@ -68,10 +73,22 @@ class SocketController {
     public void GetAndSendMSg(@Payload String jsonStr){
         JSONObject jsonObject = new JSONObject(jsonStr);
 
-        System.out.println("\n\n"+jsonObject);
-
+        String userTO = jsonObject.getString("userTO");
+        String userFrom = jsonObject.getString("userFrom");
+        String msg = jsonObject.getString("msg");
         messagingTemplate.convertAndSendToUser(jsonObject.getString("userFrom"), "/queue/updates", String.valueOf(jsonObject));
 
+        MsgEntity msgEntity = new MsgEntity();
+
+        msgEntity.setMsgDate(new Date());
+        msgEntity.setNameFrom(userFrom);
+        msgEntity.setTabFrom(Integer.parseInt(userFrom));
+        msgEntity.setNameTo(userTO);
+        msgEntity.setTabTo(Integer.parseInt(userTO));
+        msgEntity.setMsg(msg);
+        msgEntity.setStatus(0);
+
+        msgService.saveMsg(msgEntity);
     }
 
 

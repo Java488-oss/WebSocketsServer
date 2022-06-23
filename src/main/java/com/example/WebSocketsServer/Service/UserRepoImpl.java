@@ -16,6 +16,7 @@ public class UserRepoImpl implements UserRepoCustom {
 
     @Override
     public List<UserEntity> getUserByName(String name, String pass) {
+
         String hql="from UserEntity where user='"+name+"' and pass='"+pass+"'";
         return entityManager.createQuery(hql, UserEntity.class).getResultList();
     }
