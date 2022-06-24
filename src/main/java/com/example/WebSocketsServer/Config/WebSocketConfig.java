@@ -11,6 +11,7 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import java.util.List;
 
@@ -25,6 +26,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.enableSimpleBroker("/user"); //send answer to client
         config.setApplicationDestinationPrefixes("/spring-security-mvc-socket"); //reading what's send client
         config.setUserDestinationPrefix("/user");
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(4194304);
+        registration.setSendBufferSizeLimit(4194304);
+        registration.setSendTimeLimit(4194304);
+    }
+
+    @Bean
+    public ServletServerContainerFactoryBean createServletServerContainerFactoryBean() {
+        ServletServerContainerFactoryBean factoryBean = new ServletServerContainerFactoryBean();
+        factoryBean.setMaxTextMessageBufferSize(4194304);
+        factoryBean.setMaxBinaryMessageBufferSize(4194304);
+        factoryBean.setMaxSessionIdleTimeout(4194304L);
+        factoryBean.setAsyncSendTimeout(4194304L);
+        return factoryBean;
     }
 
     @Override
