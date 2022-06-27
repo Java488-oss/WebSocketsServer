@@ -19,9 +19,19 @@ public class UserEntity {
 
     private String pass;
 
+    @Column(insertable = false)
+    private boolean isOnline;
+
     public UserEntity(String user, String pass) {
         this.user = user;
         this.pass = pass;
+    }
+
+    public UserEntity(Long id, String user, String pass, boolean isOnline) {
+        this.id = id;
+        this.user = user;
+        this.pass = pass;
+        this.isOnline = isOnline;
     }
 
     public UserEntity() {

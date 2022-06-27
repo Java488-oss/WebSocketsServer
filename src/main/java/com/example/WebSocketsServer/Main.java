@@ -4,16 +4,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Main {
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
+public class Main {
+    private static Timer timer = new Timer();
     public static void main(String[] args) {
-        System.out.println(textSend());
+        GetStateUser();
     }
 
-    private static JSONObject textSend() {
-        JSONObject student1 = new JSONObject();
-        student1.put("user", "name");
-        student1.put("pass", "pass");
-        return student1;
+    public static void GetStateUser() {
+
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        System.out.println("test "+new Date());
+                        GetStateUser();
+                    }
+                },
+                1000
+        );
+
     }
 }

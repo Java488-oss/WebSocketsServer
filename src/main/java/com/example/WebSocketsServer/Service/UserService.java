@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,11 +25,11 @@ public class UserService {
     }
 
     public List<UserEntity> findAll(){
-        return userResource.findAll();
+        return (List<UserEntity>) userResource.findAll();
     }
 
-    public UserEntity getUserById(long id){
-        return userResource.getOne(id);
+    public Optional<UserEntity> getUserById(long id){
+        return userResource.findById(id);
     }
 
     public UserEntity saveUser(UserEntity answerModel){
@@ -38,5 +39,9 @@ public class UserService {
     public void deleteUserById(long id){
         userResource.deleteById(id);
     }
+
+//    public void update(long id){
+//        userResource.sa
+//    }
 
 }
