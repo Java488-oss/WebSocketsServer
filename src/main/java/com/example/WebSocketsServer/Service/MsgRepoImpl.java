@@ -23,4 +23,11 @@ public class MsgRepoImpl implements MsgRepoCustom {
 
     }
 
+    @Override
+    public List<MsgEntity> updateIsOnline(String pass,Boolean state) {
+//        String hql="from MsgEntity where isSend=false";
+        String hql="from MsgEntity where isSend='"+state+"' and TabFrom='"+pass+"'";
+        return entityManager.createQuery(hql, MsgEntity.class).getResultList();
+    }
+
 }

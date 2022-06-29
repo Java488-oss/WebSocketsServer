@@ -10,4 +10,5 @@ import java.util.List;
 public interface MsgRepoCustom {
 
     List<MsgEntity> updateUserState(String date);
+    List<MsgEntity> updateIsOnline(String pass,Boolean state);
 }
