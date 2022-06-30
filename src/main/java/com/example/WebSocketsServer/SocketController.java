@@ -97,6 +97,23 @@ class SocketController {
                                 userEntity.setPass(pass.getPass());
                                 userEntity.setOnline(false);
                                 userService.saveUser(userEntity);
+
+//                                Отправка сообщения для клиента если он был в оффлайн но ему написали
+                                List<MsgEntity> msgEntityList = msgRepo.updateIsOnline(pass.getPass(), false);
+                                msgEntityList.forEach(isSend -> {
+
+                                    JSONObject jsonObject = new JSONObject();
+
+                                    jsonObject.put("userTO", isSend.getTabTo());
+                                    jsonObject.put("userFrom", isSend.getTabFrom());
+                                    jsonObject.put("msg", isSend.getMsg());
+                                    jsonObject.put("Date", isSend.getMsgDate());
+
+                                    messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/offline", String.valueOf(jsonObject));
+
+
+                                });
+
                             }
                             messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/state", "Your online?");
                         });
@@ -146,23 +163,6 @@ class SocketController {
         });
     }
 
-
-
-    //Отправка сообщения для клиента если он был в оффлайн но ему написали
-//                                List<MsgEntity> msgEntityList = msgRepo.updateIsOnline(pass.getPass(), false);
-//                                msgEntityList.forEach(isSend -> {
-//
-//                                    JSONObject jsonObject = new JSONObject();
-//
-//                                    jsonObject.put("userTO", isSend.getTabTo());
-//                                    jsonObject.put("userFrom", isSend.getTabFrom());
-//                                    jsonObject.put("msg", isSend.getMsg());
-//                                    jsonObject.put("Date", isSend.getMsgDate());
-//
-//                                    messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/updates", String.valueOf(jsonObject));
-//
-//
-//                                });
 
     public void register(MsgEntity message) {
 
