@@ -9,13 +9,12 @@ import com.example.WebSocketsServer.Service.UserService;
 import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 @RestController
 class SocketController {
@@ -24,6 +23,8 @@ class SocketController {
     private final UserService userService;
     private final MsgService msgService;
     private final UserRepoImpl userRepo;
+
+    List<UserEntity> entityList;
 
     private final MsgRepoImpl msgRepo;
 
@@ -58,8 +59,6 @@ class SocketController {
     @MessageMapping("/SendMsg")
     public void GetAndSendMSg(@Payload String jsonStr) {
 
-
-
         JSONObject jsonObject = new JSONObject(jsonStr);
 
         String userTO = jsonObject.getString("userTO");
@@ -77,7 +76,7 @@ class SocketController {
         msgEntity.setTabTo(Integer.parseInt(userTO));
         msgEntity.setMsg(msg);
         msgEntity.setStatus(0);
-        msgEntity.setSend(false);
+        msgEntity.setIsSend(false);
 
         msgService.saveMsg(msgEntity);
     }
@@ -89,7 +88,6 @@ class SocketController {
                     public void run() {
                         List<UserEntity> entityList1 = userService.findAll();
 
-
                         //Проверка в сети клиент или нет
                         entityList1.forEach(pass->{
                             if(pass.isOnline()) {
@@ -99,23 +97,6 @@ class SocketController {
                                 userEntity.setPass(pass.getPass());
                                 userEntity.setOnline(false);
                                 userService.saveUser(userEntity);
-
-
-                                //Отправка сообщения для клиента если он был в оффлайн но ему написали
-                                List<MsgEntity> msgEntityList = msgRepo.updateIsOnline(pass.getPass(), false);
-                                msgEntityList.forEach(isSend -> {
-
-                                    JSONObject jsonObject = new JSONObject();
-
-                                    jsonObject.put("userTO", isSend.getTabTo());
-                                    jsonObject.put("userFrom", isSend.getTabFrom());
-                                    jsonObject.put("msg", isSend.getMsg());
-                                    jsonObject.put("Date", isSend.getMsgDate());
-
-                                    messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/updates", String.valueOf(jsonObject));
-
-
-                                });
                             }
                             messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/state", "Your online?");
                         });
@@ -139,13 +120,13 @@ class SocketController {
             userService.saveUser(userEntity);
         });
     }
-
+//
     @MessageMapping("/isSend")
     public void isSend(String msg){
 
         JSONObject jsonObject = new JSONObject(msg);
 //        List<MsgEntity> entityList = msgRepo.updateUserState(jsonObject.getString("date"));
-        List<MsgEntity> entityList = msgRepo.updateUserState(jsonObject.getString("date"));
+        List<MsgEntity> entityList = msgRepo.updateUserState(jsonObject.getString("Date"));
 
         entityList.forEach(t->{
 
@@ -159,11 +140,29 @@ class SocketController {
             msgEntity.setTabTo(t.getTabTo());
             msgEntity.setMsg(t.getMsg());
             msgEntity.setStatus(0);
-            msgEntity.setSend(true);
+            msgEntity.setIsSend(true);
 
             msgService.saveMsg(msgEntity);
         });
     }
+
+
+
+    //Отправка сообщения для клиента если он был в оффлайн но ему написали
+//                                List<MsgEntity> msgEntityList = msgRepo.updateIsOnline(pass.getPass(), false);
+//                                msgEntityList.forEach(isSend -> {
+//
+//                                    JSONObject jsonObject = new JSONObject();
+//
+//                                    jsonObject.put("userTO", isSend.getTabTo());
+//                                    jsonObject.put("userFrom", isSend.getTabFrom());
+//                                    jsonObject.put("msg", isSend.getMsg());
+//                                    jsonObject.put("Date", isSend.getMsgDate());
+//
+//                                    messagingTemplate.convertAndSendToUser(pass.getPass(), "/queue/updates", String.valueOf(jsonObject));
+//
+//
+//                                });
 
     public void register(MsgEntity message) {
 
