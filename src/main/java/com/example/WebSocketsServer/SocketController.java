@@ -6,6 +6,7 @@ import com.example.WebSocketsServer.Service.MsgRepoImpl;
 import com.example.WebSocketsServer.Service.MsgService;
 import com.example.WebSocketsServer.Service.UserRepoImpl;
 import com.example.WebSocketsServer.Service.UserService;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -13,8 +14,13 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 @RestController
 class SocketController {
@@ -79,6 +85,11 @@ class SocketController {
         msgEntity.setIsSend(false);
 
         msgService.saveMsg(msgEntity);
+
+
+
+        register(msgEntity);
+
     }
 
     public void GetStateUser() {
@@ -167,13 +178,17 @@ class SocketController {
     public void register(MsgEntity message) {
 
         try {
-            System.out.println(message.getMsg());
 
-//            Files.write( Paths.get("test.txt"), message.getMsg().getBytes());
-//            FileUtils.writeStringToFile(new File("test.txt"), "Hello File", StandardCharsets.UTF_8);
-//            FileOutputStream out = new FileOutputStream("test.txt");
-//            out.write(message);
-//            out.close();
+            File file = new File("Test.txt");
+            if(file.exists()){
+                file.delete();
+                file.createNewFile();
+            }
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+            writer.append(message.getMsg());
+
+            writer.close();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
