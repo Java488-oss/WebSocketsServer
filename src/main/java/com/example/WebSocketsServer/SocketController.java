@@ -57,9 +57,9 @@ class SocketController {
         student.put("pass", pass);
         student.put("result", s);
 
-        messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/updates", String.valueOf(student));
+        messagingTemplate.convertAndSendToUser(jsonObject.getString("id"), "/queue/Login", String.valueOf(student));
 
-        GetStateUser();
+//        GetStateUser();
     }
 
     @MessageMapping("/SendMsg")
@@ -86,9 +86,7 @@ class SocketController {
 
         msgService.saveMsg(msgEntity);
 
-
-
-        register(msgEntity);
+//        register(msgEntity);
 
     }
 
@@ -148,12 +146,11 @@ class SocketController {
             userService.saveUser(userEntity);
         });
     }
-//
+
     @MessageMapping("/isSend")
     public void isSend(String msg){
 
         JSONObject jsonObject = new JSONObject(msg);
-//        List<MsgEntity> entityList = msgRepo.updateUserState(jsonObject.getString("date"));
         List<MsgEntity> entityList = msgRepo.updateUserState(jsonObject.getString("Date"));
 
         entityList.forEach(t->{
